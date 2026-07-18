@@ -47,12 +47,12 @@
   - `[x]` Create Manage Items Page.
   - `[x]` Integrate Manage Items Page with delete and view.
 
-- `[ ]` **Phase 7: AI Integration**
-  - `[ ]` Integrate `@google/genai` SDK in backend.
-  - `[ ]` Create POST /api/ai/generate-content endpoint.
-  - `[ ]` Add "AI Generate Content" button on Add Item Page.
-  - `[ ]` Create GET /api/ai/recommendations endpoint.
-  - `[ ]` Display "Recommended for You" section on frontend.
+- `[x]` **Phase 7: AI Integration**
+  - `[x]` Integrate `@google/genai` SDK in backend.
+  - `[x]` Create POST /api/ai/generate-content endpoint.
+  - `[x]` Add "AI Generate Content" button on Add Item Page.
+  - `[x]` Create GET /api/ai/recommendations endpoint.
+  - `[x]` Display "Recommended for You" section on frontend.
 
 - `[ ]` **Phase 8: Polish & Additional Pages**
   - `[ ]` Create About page.

@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { ItemsResponse } from '@/types';
 import ItemCard, { ItemCardSkeleton } from '@/components/ItemCard';
+import RecommendedItems from '@/components/RecommendedItems';
 import { Search, Filter, SlidersHorizontal, X } from 'lucide-react';
 
 const CATEGORIES = ['All', 'Programming', 'Design', 'Data Science', 'Business', 'Marketing', 'Language'];
@@ -177,6 +178,9 @@ function ExploreContent() {
 
         {/* Main Grid */}
         <div className="flex-1">
+          {/* AI Recommendations */}
+          {search === '' && category === 'All' && <RecommendedItems />}
+          
           {/* Results Info */}
           <div className="mb-6 text-sm text-muted">
             {isLoading ? 'Loading...' : `Showing ${data?.items.length || 0} of ${data?.pagination?.total || 0} results`}

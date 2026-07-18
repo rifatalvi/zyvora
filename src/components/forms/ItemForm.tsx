@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { ItemCategory, ItemType, DifficultyLevel } from '@/types';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 const CATEGORIES: ItemCategory[] = [
   'Programming', 'Design', 'Data Science', 'Business', 
@@ -102,7 +102,31 @@ export default function ItemForm() {
         </div>
 
         <div className="space-y-2 md:col-span-2">
-          <label className="text-sm font-medium text-gray-300">Full Description</label>
+          <div className="flex justify-between items-center">
+            <label className="text-sm font-medium text-gray-300">Full Description</label>
+            <button
+              type="button"
+              onClick={async () => {
+                if (!formData.title) {
+                  setError('Please enter a title first so the AI knows what to write about.');
+                  return;
+                }
+                try {
+                  const res = await api.post('/api/ai/generate-content', {
+                    title: formData.title,
+                    shortDescription: formData.shortDescription,
+                    category: formData.category,
+                  });
+                  setFormData(prev => ({ ...prev, fullDescription: res.data.data }));
+                } catch (err: any) {
+                  setError('Failed to generate AI content');
+                }
+              }}
+              className="text-xs flex items-center gap-1 text-[var(--primary)] hover:text-[var(--secondary)] transition-colors bg-[var(--primary)]/10 px-2 py-1 rounded"
+            >
+              <Sparkles className="w-3 h-3" /> AI Generate
+            </button>
+          </div>
           <textarea
             name="fullDescription"
             required
