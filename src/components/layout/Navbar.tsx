@@ -13,6 +13,7 @@ const publicRoutes = [
   { href: '/',        label: 'Home' },
   { href: '/explore', label: 'Explore' },
   { href: '/about',   label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 const authRoutes = [
@@ -21,6 +22,7 @@ const authRoutes = [
   { href: '/add-item',    label: 'Add Course', icon: <PlusCircle size={16} /> },
   { href: '/manage-items', label: 'My Courses', icon: <List       size={16} /> },
   { href: '/about',        label: 'About',      icon: <GraduationCap size={16} /> },
+  { href: '/contact',      label: 'Contact',    icon: <LayoutDashboard size={16} /> },
 ];
 
 export default function Navbar() {

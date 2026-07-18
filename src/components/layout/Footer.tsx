@@ -8,8 +8,8 @@ const footerLinks = {
   Platform: [
     { label: 'Explore Courses', href: '/explore' },
     { label: 'Find Mentors',    href: '/explore?type=mentorship' },
-    { label: 'Add Course',      href: '/items/add' },
-    { label: 'My Courses',      href: '/items/manage' },
+    { label: 'Add Course',      href: '/add-item' },
+    { label: 'My Courses',      href: '/manage-items' },
   ],
   Company: [
     { label: 'About Us', href: '/about' },

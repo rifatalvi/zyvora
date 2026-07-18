@@ -54,8 +54,8 @@
   - `[x]` Create GET /api/ai/recommendations endpoint.
   - `[x]` Display "Recommended for You" section on frontend.
 
-- `[ ]` **Phase 8: Polish & Additional Pages**
-  - `[ ]` Create About page.
-  - `[ ]` Create Contact page.
-  - `[ ]` Final UI/UX review.
-  - `[ ]` Final responsive testing.
+- `[x]` **Phase 8: Polish & Additional Pages**
+  - `[x]` Create About page.
+  - `[x]` Create Contact page.
+  - `[x]` Final UI/UX review.
+  - `[x]` Final responsive testing.
