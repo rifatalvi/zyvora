@@ -18,8 +18,8 @@ const publicRoutes = [
 const authRoutes = [
   { href: '/',             label: 'Home',       icon: <BookOpen   size={16} /> },
   { href: '/explore',      label: 'Explore',    icon: <Sparkles   size={16} /> },
-  { href: '/items/add',    label: 'Add Course', icon: <PlusCircle size={16} /> },
-  { href: '/items/manage', label: 'My Courses', icon: <List       size={16} /> },
+  { href: '/add-item',    label: 'Add Course', icon: <PlusCircle size={16} /> },
+  { href: '/manage-items', label: 'My Courses', icon: <List       size={16} /> },
   { href: '/about',        label: 'About',      icon: <GraduationCap size={16} /> },
 ];
 
@@ -124,8 +124,8 @@ export default function Navbar() {
                     <p className="text-sm font-semibold text-text truncate">{user?.email}</p>
                   </div>
                   {[
-                    { href: '/items/manage', label: 'My Courses',  Icon: LayoutDashboard },
-                    { href: '/items/add',    label: 'Add Course',  Icon: PlusCircle },
+                    { href: '/manage-items', label: 'My Courses',  Icon: LayoutDashboard },
+                    { href: '/add-item',    label: 'Add Course',  Icon: PlusCircle },
                   ].map(({ href, label, Icon }) => (
                     <Link
                       key={href} href={href}
