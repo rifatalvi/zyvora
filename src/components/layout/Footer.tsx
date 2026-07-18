@@ -12,14 +12,14 @@ const footerLinks = {
     { label: 'My Courses',      href: '/items/manage' },
   ],
   Company: [
-    { label: 'About Us',    href: '/about' },
-    { label: 'Contact',     href: '/contact' },
-    { label: 'Blog',        href: '/blog' },
-    { label: 'Careers',     href: '/about#careers' },
+    { label: 'About Us', href: '/about' },
+    { label: 'Contact',  href: '/contact' },
+    { label: 'Blog',     href: '/blog' },
+    { label: 'Careers',  href: '/about#careers' },
   ],
   Legal: [
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Privacy Policy',  href: '/privacy' },
+    { label: 'Terms of Service',href: '/terms' },
     { label: 'Cookie Policy',   href: '/privacy#cookies' },
   ],
 };
@@ -31,42 +31,46 @@ const socials = [
   { Icon: Play,      href: 'https://youtube.com', label: 'YouTube' },
 ];
 
+const contactItems = [
+  { Icon: Mail,    text: 'hello@zyvora.ai' },
+  { Icon: Phone,   text: '+1 (555) 000-0000' },
+  { Icon: MapPin,  text: 'San Francisco, CA' },
+];
+
 export default function Footer() {
   return (
-    <footer style={{ background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)' }}>
-      {/* ── Main Footer ──────────────────────────────────────── */}
-      <div className="section-container py-16">
+    <footer className="bg-surface border-t border-primary-900/20">
+
+      {/* ── Main Footer Content ───────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Brand Col */}
+
+          {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                   style={{ background: 'var(--gradient-brand)' }}>
+            <Link href="/" className="flex items-center gap-2.5 mb-5">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center gradient-brand">
                 <Zap size={20} className="text-white" />
               </div>
               <span className="text-xl font-bold">
                 <span className="gradient-text">Zy</span>
-                <span className="text-white">vora</span>
+                <span className="text-text">vora</span>
               </span>
             </Link>
-            <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--color-muted)' }}>
-              Zyvora is your AI-powered learning platform connecting ambitious learners 
+
+            <p className="text-sm text-muted leading-relaxed mb-6 max-w-xs">
+              Zyvora is your AI-powered learning platform connecting ambitious learners
               with world-class mentors and skill-building resources.
             </p>
 
-            {/* Contact Info */}
-            <div className="space-y-2 mb-6">
-              {[
-                { Icon: Mail,    text: 'hello@zyvora.ai' },
-                { Icon: Phone,   text: '+1 (555) 000-0000' },
-                { Icon: MapPin,  text: 'San Francisco, CA' },
-              ].map(({ Icon, text }) => (
-                <div key={text} className="flex items-center gap-2 text-sm" style={{ color: 'var(--color-muted)' }}>
-                  <Icon size={14} style={{ color: 'var(--color-primary-400)' }} />
+            {/* Contact */}
+            <ul className="space-y-2.5 mb-6">
+              {contactItems.map(({ Icon, text }) => (
+                <li key={text} className="flex items-center gap-2.5 text-sm text-muted">
+                  <Icon size={14} className="text-primary-400 shrink-0" />
                   {text}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
 
             {/* Socials */}
             <div className="flex items-center gap-3">
@@ -77,18 +81,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200"
-                  style={{ border: '1px solid var(--color-border)', color: 'var(--color-muted)' }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(99,102,241,0.5)';
-                    (e.currentTarget as HTMLElement).style.color = 'var(--color-primary-400)';
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(99,102,241,0.1)';
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)';
-                    (e.currentTarget as HTMLElement).style.color = 'var(--color-muted)';
-                    (e.currentTarget as HTMLElement).style.background = 'transparent';
-                  }}
+                  className="w-9 h-9 rounded-lg flex items-center justify-center text-muted border border-primary-900/30 hover:border-primary-500/50 hover:text-primary-400 hover:bg-primary-500/10 transition-all duration-200"
                 >
                   <Icon size={16} />
                 </a>
@@ -99,16 +92,15 @@ export default function Footer() {
           {/* Link Columns */}
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section}>
-              <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">{section}</h3>
-              <ul className="space-y-2.5">
+              <h3 className="text-xs font-semibold text-white uppercase tracking-widest mb-5">
+                {section}
+              </h3>
+              <ul className="space-y-3">
                 {links.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-sm transition-colors duration-200"
-                      style={{ color: 'var(--color-muted)' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--color-primary-400)')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'var(--color-muted)')}
+                      className="text-sm text-muted hover:text-primary-400 transition-colors duration-200"
                     >
                       {label}
                     </Link>
@@ -121,13 +113,13 @@ export default function Footer() {
       </div>
 
       {/* ── Bottom Bar ───────────────────────────────────────── */}
-      <div style={{ borderTop: '1px solid var(--color-border)' }}>
-        <div className="section-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs" style={{ color: 'var(--color-muted)' }}>
+      <div className="border-t border-primary-900/20">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted">
             © {new Date().getFullYear()} Zyvora. All rights reserved.
           </p>
-          <p className="text-xs" style={{ color: 'var(--color-muted)' }}>
-            Built with ❤️ using Next.js, TypeScript & Gemini AI
+          <p className="text-xs text-muted">
+            Built with ❤️ using Next.js, TypeScript &amp; Gemini AI
           </p>
         </div>
       </div>
