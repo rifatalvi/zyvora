@@ -23,12 +23,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (session?.user) {
       const u = session.user as any;
       setUser({
-        _id: u.id,
-        email: u.email,
-        name: u.name,
-        role: u.role || 'learner',
-        // better-auth stores uploaded image in `image`, but our custom field is `avatar`
-        avatar: u.avatar || u.image || '',
+        _id:       u.id,
+        email:     u.email,
+        name:      u.name,
+        // inferAdditionalFields now makes these available directly on u
+        role:      u.role   || 'learner',
+        avatar:    u.avatar || u.image || '',
         createdAt: u.createdAt?.toString() || new Date().toISOString(),
       });
     } else {
