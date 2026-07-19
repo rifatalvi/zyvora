@@ -42,7 +42,7 @@ function ExploreContent() {
     if (difficulty !== 'All') params.set('difficulty', difficulty);
     if (page > 1) params.set('page', page.toString());
 
-    router.replace(`/explore?${params.toString()}`, { scroll: false });
+    router.replace(`${process.env.NEXT_PUBLIC_BASE_URL}/explore?${params.toString()}`, { scroll: false });
   }, [debouncedSearch, category, type, difficulty, page, router]);
 
   // Fetch Data

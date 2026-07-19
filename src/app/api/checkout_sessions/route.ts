@@ -61,7 +61,7 @@ export async function POST(req: Request) {
             // Forward the cookie from the incoming request so the backend can authenticate the user
             const cookieHeader = req.headers.get('cookie') || '';
             await api.post(
-                '/bookings', 
+                '/bookings',
                 {
                     itemId: item._id,
                     amount: item.price,
