@@ -18,12 +18,12 @@ function ExploreContent() {
   const searchParams = useSearchParams();
 
   // URL state sync
-  const [search, setSearch]         = useState(searchParams.get('search') || '');
-  const [category, setCategory]     = useState(searchParams.get('category') || 'All');
-  const [type, setType]             = useState(searchParams.get('type') || 'All');
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [category, setCategory] = useState(searchParams.get('category') || 'All');
+  const [type, setType] = useState(searchParams.get('type') || 'All');
   const [difficulty, setDifficulty] = useState(searchParams.get('difficulty') || 'All');
-  const [page, setPage]             = useState(Number(searchParams.get('page')) || 1);
-  
+  const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+
   const [showFilters, setShowFilters] = useState(false);
 
   // Debounced search trigger
@@ -41,7 +41,7 @@ function ExploreContent() {
     if (type !== 'All') params.set('type', type);
     if (difficulty !== 'All') params.set('difficulty', difficulty);
     if (page > 1) params.set('page', page.toString());
-    
+
     router.replace(`/explore?${params.toString()}`, { scroll: false });
   }, [debouncedSearch, category, type, difficulty, page, router]);
 
@@ -57,7 +57,7 @@ function ExploreContent() {
       params.append('page', page.toString());
       params.append('limit', '12');
 
-      const res = await api.get(`/items?${params.toString()}`);
+      const res = await api.get(`${process.env.NEXT_PUBLIC_API_URL}/items?${params.toString()}`);
       return res.data;
     },
     placeholderData: (prev) => prev,
@@ -79,7 +79,7 @@ function ExploreContent() {
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Explore <span className="gradient-text">Resources</span></h1>
           <p className="text-muted">Find the perfect course or mentor for your next skill.</p>
         </div>
-        
+
         <div className="w-full md:w-auto flex items-center gap-3">
           <div className="relative flex-1 md:w-80">
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
@@ -180,7 +180,7 @@ function ExploreContent() {
         <div className="flex-1">
           {/* AI Recommendations */}
           {search === '' && category === 'All' && <RecommendedItems />}
-          
+
           {/* Results Info */}
           <div className="mb-6 text-sm text-muted">
             {isLoading ? 'Loading...' : `Showing ${data?.items.length || 0} of ${data?.pagination?.total || 0} results`}
