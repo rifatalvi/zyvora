@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   Eye, EyeOff, Zap, Mail, Lock, User as UserIcon,
-  AlertCircle, GraduationCap, Briefcase, CheckCircle,
+  AlertCircle, GraduationCap, Briefcase, CheckCircle, UploadCloud, ImagePlus, X, Loader2
 } from 'lucide-react';
 
 type Role = 'learner' | 'provider';
@@ -21,11 +21,48 @@ export default function RegisterPage() {
   const { register } = useAuth();
 
   const [form, setForm] = useState({
-    name: '', email: '', password: '', confirmPassword: '', role: 'learner' as Role,
+    name: '', email: '', password: '', confirmPassword: '', role: 'learner' as Role, avatar: '',
   });
   const [errors, setErrors] = useState<Partial<typeof form & { general: string }>>({});
   const [loading, setLoading] = useState(false);
   const [showPw,  setShowPw]  = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setErrors({});
+
+    const uploadData = new FormData();
+    uploadData.append('image', file);
+
+    try {
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`, {
+        method: 'POST',
+        body: uploadData,
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setForm(prev => ({ ...prev, avatar: data.data.url }));
+      } else {
+        setErrors({ general: data.error?.message || 'Failed to upload image' });
+      }
+    } catch (err) {
+      setErrors({ general: 'Error uploading image. Please try again.' });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setForm(prev => ({ ...prev, avatar: '' }));
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
 
   const validate = () => {
     const e: typeof errors = {};
@@ -47,7 +84,7 @@ export default function RegisterPage() {
     setLoading(true);
     setErrors({});
     try {
-      await register(form.name.trim(), form.email, form.password, form.role);
+      await register(form.name.trim(), form.email, form.password, form.role, form.avatar);
       router.push('/');
     } catch (err: any) {
       setErrors({ general: err?.response?.data?.message || 'Registration failed.' });
@@ -133,6 +170,47 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+
+            {/* Profile Avatar Upload */}
+            <div className="flex flex-col items-center justify-center mb-6">
+              <div
+                onClick={() => !isUploading && fileInputRef.current?.click()}
+                className={`relative w-24 h-24 rounded-full border-2 border-dashed transition-all duration-300 flex items-center justify-center overflow-hidden cursor-pointer group mx-auto
+                  ${form.avatar ? 'border-transparent' : 'border-primary-500/50 hover:border-primary-400 bg-surface-2'}
+                  ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}
+                `}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="hidden"
+                />
+
+                {form.avatar ? (
+                  <>
+                    <img src={form.avatar} alt="Avatar" className="absolute inset-0 w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button type="button" onClick={removeImage} className="text-red-400 p-1 hover:text-red-300">
+                        <X className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center">
+                    {isUploading ? (
+                      <Loader2 className="w-6 h-6 text-primary-400 animate-spin" />
+                    ) : (
+                      <UploadCloud className="w-6 h-6 text-muted group-hover:text-primary-400 transition-colors" />
+                    )}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted mt-2 text-center">
+                {isUploading ? 'Uploading...' : 'Upload Profile Picture (Optional)'}
+              </p>
+            </div>
 
             {/* Name */}
             <div>

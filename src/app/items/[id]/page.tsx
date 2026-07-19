@@ -8,6 +8,7 @@ import { Item } from '@/types';
 import ItemCard from '@/components/ItemCard';
 import { Star, Clock, User, CheckCircle2, ChevronRight, MessageSquare, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 interface DetailsResponse {
   success: boolean;
@@ -18,6 +19,7 @@ interface DetailsResponse {
 export default function ItemDetailsPage() {
   const params = useParams();
   const id = params.id as string;
+  const { user } = useAuth();
 
   const { data, isLoading, isError } = useQuery<DetailsResponse>({
     queryKey: ['item', id],
@@ -26,6 +28,33 @@ export default function ItemDetailsPage() {
       return res.data;
     }
   });
+
+  const [isEnrolling, setIsEnrolling] = React.useState(false);
+
+  const handleEnroll = async () => {
+    if (!data?.item) return;
+    try {
+      setIsEnrolling(true);
+      const res = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId: data.item._id, email: user?.email }),
+      });
+      const result = await res.json();
+      
+      if (result.url) {
+        window.location.href = result.url;
+      } else {
+        console.error('Checkout error:', result.error);
+        alert('Failed to start checkout process.');
+      }
+    } catch (error) {
+      console.error('Enrollment error:', error);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setIsEnrolling(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -48,6 +77,7 @@ export default function ItemDetailsPage() {
   }
 
   const { item, related } = data;
+
 
   return (
     <div className="pb-24">
@@ -108,8 +138,17 @@ export default function ItemDetailsPage() {
 
             <div className="flex items-center gap-6">
               <span className="text-4xl font-extrabold text-white">${item.price.toFixed(2)}</span>
-              <button className="flex-1 max-w-[200px] py-4 rounded-xl text-white font-bold gradient-brand hover:shadow-[0_0_24px_rgba(99,102,241,0.4)] transition-all">
-                Enroll Now
+              <button 
+                onClick={handleEnroll}
+                disabled={isEnrolling}
+                className="flex-1 max-w-[200px] py-4 rounded-xl text-white font-bold gradient-brand hover:shadow-[0_0_24px_rgba(99,102,241,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+              >
+                {isEnrolling ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Redirecting...
+                  </>
+                ) : 'Enroll Now'}
               </button>
             </div>
             

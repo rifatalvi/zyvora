@@ -4,9 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { Avatar } from '@heroui/react';
 import {
   BookOpen, Zap, Menu, X, LogOut, ChevronDown,
   LayoutDashboard, PlusCircle, List, Sparkles, GraduationCap,
+  BookMarked, Receipt, TrendingUp,
 } from 'lucide-react';
 
 const publicRoutes = [
@@ -101,16 +103,7 @@ export default function Navbar() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-2 p-1 rounded-xl hover:bg-primary-500/10 transition-colors duration-200"
               >
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar} alt={user.name}
-                    className="w-9 h-9 rounded-full object-cover border-2 border-primary-500/40"
-                  />
-                ) : (
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm gradient-brand">
-                    {avatarFallback}
-                  </div>
-                )}
+                <Avatar src={user?.avatar || undefined} name={avatarFallback} showFallback className="w-9 h-9 border-2 border-primary-500/40" />
                 <span className="text-sm font-medium text-text">
                   {user?.name?.split(' ')[0]}
                 </span>
@@ -127,12 +120,24 @@ export default function Navbar() {
                     <p className="text-xs font-medium text-muted">Signed in as</p>
                     <p className="text-sm font-semibold text-text truncate">{user?.email}</p>
                   </div>
+                  {/* Links visible to ALL logged-in users */}
                   {[
-                    { href: '/manage-items', label: 'My Courses',  Icon: LayoutDashboard },
-                    { href: '/add-item',    label: 'Add Course',  Icon: PlusCircle },
-                  ]
-                  .filter(() => user?.role === 'provider')
-                  .map(({ href, label, Icon }) => (
+                    { href: '/my-bookings',   label: 'My Bookings',        Icon: BookMarked },
+                    { href: '/transactions',  label: 'Transaction History', Icon: Receipt },
+                  ].map(({ href, label, Icon }) => (
+                    <Link
+                      key={href} href={href}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-text hover:bg-primary-500/8 transition-colors"
+                    >
+                      <Icon size={15} /> {label}
+                    </Link>
+                  ))}
+                  {/* Provider-only links */}
+                  {user?.role === 'provider' && [
+                    { href: '/manage-items', label: 'My Courses',    Icon: LayoutDashboard },
+                    { href: '/add-item',     label: 'Add Course',    Icon: PlusCircle },
+                    { href: '/provider/sales', label: 'Sales History', Icon: TrendingUp },
+                  ].map(({ href, label, Icon }) => (
                     <Link
                       key={href} href={href}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-text hover:bg-primary-500/8 transition-colors"
@@ -198,12 +203,39 @@ export default function Navbar() {
           ))}
           <div className="border-t border-primary-900/20 mt-2 pt-3 px-4 flex flex-col gap-2">
             {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 text-sm text-red-400 py-2"
-              >
-                <LogOut size={15} /> Sign Out
-              </button>
+              <>
+                <Link
+                  href="/my-bookings"
+                  className="flex items-center gap-2 text-sm text-muted hover:text-text py-2"
+                >
+                  <BookMarked size={15} /> My Bookings
+                </Link>
+                <Link
+                  href="/transactions"
+                  className="flex items-center gap-2 text-sm text-muted hover:text-text py-2"
+                >
+                  <Receipt size={15} /> Transaction History
+                </Link>
+                {user?.role === 'provider' && (
+                  <>
+                    <Link href="/manage-items" className="flex items-center gap-2 text-sm text-muted hover:text-text py-2">
+                      <LayoutDashboard size={15} /> My Courses
+                    </Link>
+                    <Link href="/add-item" className="flex items-center gap-2 text-sm text-muted hover:text-text py-2">
+                      <PlusCircle size={15} /> Add Course
+                    </Link>
+                    <Link href="/provider/sales" className="flex items-center gap-2 text-sm text-muted hover:text-text py-2">
+                      <TrendingUp size={15} /> Sales History
+                    </Link>
+                  </>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-sm text-red-400 py-2"
+                >
+                  <LogOut size={15} /> Sign Out
+                </button>
+              </>
             ) : (
               <>
                 <Link href="/login"

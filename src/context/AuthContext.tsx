@@ -9,7 +9,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role: string) => Promise<void>;
+  register: (name: string, email: string, password: string, role: string, avatar?: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -42,12 +42,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw new Error(error.message || 'Login failed');
   };
 
-  const register = async (name: string, email: string, password: string, role: string) => {
+  const register = async (name: string, email: string, password: string, role: string, avatar?: string) => {
     const { error } = await authClient.signUp.email({
       email,
       password,
       name,
+      image: avatar, // better-auth default schema
       role, // Pass custom field here
+      avatar, // Fallback if custom field is named avatar
     } as any);
     if (error) throw new Error(error.message || 'Registration failed');
   };
