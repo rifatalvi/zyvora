@@ -21,13 +21,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (session?.user) {
+      const u = session.user as any;
       setUser({
-        _id: session.user.id,
-        email: session.user.email,
-        name: session.user.name,
-        role: (session.user as any).role || 'learner',
-        avatar: (session.user as any).avatar || '',
-        createdAt: (session.user as any).createdAt?.toString() || new Date().toISOString(),
+        _id: u.id,
+        email: u.email,
+        name: u.name,
+        role: u.role || 'learner',
+        // better-auth stores uploaded image in `image`, but our custom field is `avatar`
+        avatar: u.avatar || u.image || '',
+        createdAt: u.createdAt?.toString() || new Date().toISOString(),
       });
     } else {
       setUser(null);
@@ -47,9 +49,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       password,
       name,
-      image: avatar, // better-auth default schema
-      role, // Pass custom field here
-      avatar, // Fallback if custom field is named avatar
+      image: avatar || '',  // better-auth default `image` field
+      role,                 // custom additional field
+      avatar: avatar || '', // custom additional field fallback
     } as any);
     if (error) throw new Error(error.message || 'Registration failed');
   };

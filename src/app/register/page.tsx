@@ -85,9 +85,12 @@ export default function RegisterPage() {
     setErrors({});
     try {
       await register(form.name.trim(), form.email, form.password, form.role, form.avatar);
+      // Small delay to allow better-auth session to propagate before redirect
+      await new Promise(resolve => setTimeout(resolve, 300));
       router.push('/');
+      router.refresh(); // Force Next.js to re-fetch server components & session
     } catch (err: any) {
-      setErrors({ general: err?.response?.data?.message || 'Registration failed.' });
+      setErrors({ general: err?.message || err?.response?.data?.message || 'Registration failed.' });
     } finally {
       setLoading(false);
     }
