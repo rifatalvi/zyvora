@@ -103,7 +103,7 @@ export default function Navbar() {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-2 p-1 rounded-xl hover:bg-primary-500/10 transition-colors duration-200"
               >
-                <Avatar src={user?.avatar || undefined} name={avatarFallback} showFallback className="w-9 h-9 border-2 border-primary-500/40" />
+                <Avatar src={user?.avatar || undefined} name={avatarFallback} className="w-9 h-9 border-2 border-primary-500/40" />
                 <span className="text-sm font-medium text-text">
                   {user?.name?.split(' ')[0]}
                 </span>

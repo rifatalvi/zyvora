@@ -138,28 +138,7 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-bold text-center text-white mb-1">Create your account</h1>
           <p className="text-center text-sm text-muted mb-6">Join thousands of learners on Zyvora</p>
 
-          {/* Role Selector */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            {ROLES.map(({ value, label, desc, Icon }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setForm(f => ({ ...f, role: value }))}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all duration-200 ${
-                  form.role === value
-                    ? 'border-primary-500 bg-primary-500/12'
-                    : 'border-primary-900/30 hover:border-primary-500/30 hover:bg-primary-500/5'
-                }`}
-              >
-                <Icon size={20} className={form.role === value ? 'text-primary-400' : 'text-muted'} />
-                <span className={`text-xs font-semibold ${form.role === value ? 'text-white' : 'text-muted'}`}>
-                  {label}
-                </span>
-                <span className="text-[10px] text-muted">{desc}</span>
-                {form.role === value && <CheckCircle size={12} className="text-primary-400" />}
-              </button>
-            ))}
-          </div>
+
 
           {/* Error */}
           {errors.general && (
