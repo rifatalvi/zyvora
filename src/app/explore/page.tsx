@@ -57,7 +57,7 @@ function ExploreContent() {
       params.append('page', page.toString());
       params.append('limit', '12');
 
-      const res = await api.get(`${process.env.NEXT_PUBLIC_API_URL}/items?${params.toString()}`);
+      const res = await api.get(`${process.env.NEXT_PUBLIC_API_URL}/api/items?${params.toString()}`);
       return res.data;
     },
     placeholderData: (prev) => prev,
