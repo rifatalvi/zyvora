@@ -7,16 +7,20 @@ import ItemForm from '@/components/forms/ItemForm';
 import { Loader2 } from 'lucide-react';
 
 export default function AddItemPage() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        router.push('/login');
+      } else if (user?.role === 'learner') {
+        router.push('/');
+      }
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, user, router]);
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading || !isAuthenticated || user?.role === 'learner') {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <Loader2 className="w-10 h-10 text-[var(--primary)] animate-spin" />

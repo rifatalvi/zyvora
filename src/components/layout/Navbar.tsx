@@ -52,7 +52,9 @@ export default function Navbar() {
   useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
 
   const handleLogout = () => { logout(); router.push('/'); };
-  const routes = isAuthenticated ? authRoutes : publicRoutes;
+  const routes = isAuthenticated 
+    ? authRoutes.filter(r => user?.role === 'provider' || (r.href !== '/add-item' && r.href !== '/manage-items')) 
+    : publicRoutes;
   const avatarFallback = user?.name?.charAt(0).toUpperCase() || 'U';
 
   return (
@@ -128,7 +130,9 @@ export default function Navbar() {
                   {[
                     { href: '/manage-items', label: 'My Courses',  Icon: LayoutDashboard },
                     { href: '/add-item',    label: 'Add Course',  Icon: PlusCircle },
-                  ].map(({ href, label, Icon }) => (
+                  ]
+                  .filter(() => user?.role === 'provider')
+                  .map(({ href, label, Icon }) => (
                     <Link
                       key={href} href={href}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-muted hover:text-text hover:bg-primary-500/8 transition-colors"

@@ -14,7 +14,7 @@ export default function RecommendedItems() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['recommendations'],
     queryFn: async () => {
-      const res = await api.get('/api/ai/recommendations');
+      const res = await api.get('/ai/recommendations');
       return res.data.recommendedItems as Item[];
     },
     enabled: isAuthenticated,

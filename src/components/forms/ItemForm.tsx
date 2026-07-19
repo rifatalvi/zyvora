@@ -42,7 +42,7 @@ export default function ItemForm() {
         price: Number(data.price),
         tags: tagsArray,
       };
-      const response = await api.post('/api/items', payload);
+      const response = await api.post('/items', payload);
       return response.data;
     },
     onSuccess: (data) => {
@@ -112,7 +112,7 @@ export default function ItemForm() {
                   return;
                 }
                 try {
-                  const res = await api.post('/api/ai/generate-content', {
+                  const res = await api.post('/ai/generate-content', {
                     title: formData.title,
                     shortDescription: formData.shortDescription,
                     category: formData.category,

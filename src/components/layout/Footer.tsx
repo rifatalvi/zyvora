@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Zap, Share2, GitBranch, AtSign, Play, Mail, MapPin, Phone } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 const footerLinks = {
   Platform: [
@@ -38,6 +39,18 @@ const contactItems = [
 ];
 
 export default function Footer() {
+  const { user } = useAuth();
+  
+  const platformLinks = footerLinks.Platform.filter(
+    link => user?.role === 'provider' || (link.href !== '/add-item' && link.href !== '/manage-items')
+  );
+
+  const displayLinks = {
+    Platform: platformLinks,
+    Company: footerLinks.Company,
+    Legal: footerLinks.Legal,
+  };
+
   return (
     <footer className="bg-surface border-t border-primary-900/20">
 
@@ -90,7 +103,7 @@ export default function Footer() {
           </div>
 
           {/* Link Columns */}
-          {Object.entries(footerLinks).map(([section, links]) => (
+          {Object.entries(displayLinks).map(([section, links]) => (
             <div key={section}>
               <h3 className="text-xs font-semibold text-white uppercase tracking-widest mb-5">
                 {section}

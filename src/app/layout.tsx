@@ -3,6 +3,7 @@ import './globals.css';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import JarvisChatWidget from '@/components/chat/JarvisChatWidget';
 
 export const metadata: Metadata = {
   title: { default: 'Zyvora — AI-Powered Learning Platform', template: '%s | Zyvora' },
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <JarvisChatWidget />
         </Providers>
       </body>
     </html>
