@@ -31,9 +31,12 @@ export default function LoginPage() {
     setErrors({});
     try {
       await login(form.email, form.password);
+      // Small delay to allow better-auth session cookie to propagate
+      await new Promise(resolve => setTimeout(resolve, 300));
       router.push('/');
+      router.refresh();
     } catch (err: any) {
-      setErrors({ general: err?.response?.data?.message || 'Login failed. Please try again.' });
+      setErrors({ general: err?.message || err?.response?.data?.message || 'Login failed. Please try again.' });
     } finally {
       setLoading(false);
     }
