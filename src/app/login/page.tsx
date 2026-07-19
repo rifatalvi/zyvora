@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // kept for potential future use
+
 import { useAuth } from '@/context/AuthContext';
 import { Eye, EyeOff, Zap, Mail, Lock, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
-  const router = useRouter();
   const { login } = useAuth();
+
 
   const [form,    setForm]    = useState({ email: '', password: '' });
   const [errors,  setErrors]  = useState<{ email?: string; password?: string; general?: string }>({});
@@ -31,10 +32,8 @@ export default function LoginPage() {
     setErrors({});
     try {
       await login(form.email, form.password);
-      // Small delay to allow better-auth session cookie to propagate
-      await new Promise(resolve => setTimeout(resolve, 300));
-      router.push('/');
-      router.refresh();
+      // Full page reload so better-auth session cookie is picked up by Navbar
+      window.location.href = '/';
     } catch (err: any) {
       setErrors({ general: err?.message || err?.response?.data?.message || 'Login failed. Please try again.' });
     } finally {
