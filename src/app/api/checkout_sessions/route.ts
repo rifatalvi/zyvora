@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import Stripe from 'stripe'
+import api from '@/lib/api'
 
 export async function POST(req: Request) {
     try {
@@ -11,14 +12,12 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'No itemId provided' }, { status: 400 })
         }
 
-        // Fetch item from zyvora-server to ensure price is secure (public endpoint, no auth needed)
+        // Fetch item from zyvora-server to ensure price is secure
         let item;
         try {
-            const serverApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            const res = await fetch(`${serverApiUrl}/items/${itemId}`);
-            if (!res.ok) throw new Error(`Item fetch failed: ${res.status}`);
-            const data = await res.json();
-            item = data.item;
+            // Using absolute URL if needed, but api uses NEXT_PUBLIC_API_URL
+            const res = await api.get(`/items/${itemId}`);
+            item = res.data.item;
         } catch (error) {
             console.error('Error fetching item from server:', error);
             return NextResponse.json({ error: 'Item not found' }, { status: 404 })
@@ -58,33 +57,26 @@ export async function POST(req: Request) {
         })
 
         // Create pending booking in zyvora-server
-        // We forward the raw cookie header so the backend's Better Auth session can authenticate the user.
-        // This is necessary because this is a server-side route — browser cookies don't auto-attach.
         try {
+            // Forward the cookie from the incoming request so the backend can authenticate the user
             const cookieHeader = req.headers.get('cookie') || '';
-            const serverApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            
-            const bookingRes = await fetch(`${serverApiUrl}/bookings`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Forward the browser's cookie verbatim so Better Auth can read the session
-                    'Cookie': cookieHeader,
-                },
-                body: JSON.stringify({
+            await api.post(
+                '/bookings',
+                {
                     itemId: item._id,
                     amount: item.price,
                     stripeSessionId: checkoutSession.id,
-                }),
-            });
-
-            if (!bookingRes.ok) {
-                const errData = await bookingRes.json().catch(() => ({}));
-                console.error('Failed to create pending booking:', bookingRes.status, errData);
-            }
+                },
+                {
+                    headers: {
+                        Cookie: cookieHeader,
+                    }
+                }
+            );
         } catch (bookingError) {
             console.error('Failed to create pending booking in backend:', bookingError);
-            // Proceed anyway — verifyBookingSuccess on the success page will handle it
+            // We can choose to fail the checkout, but for now we proceed. 
+            // In a real production app, you might want to cancel the stripe session if DB save fails.
         }
 
         return NextResponse.json({ url: checkoutSession.url })
