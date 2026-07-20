@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { signUp } from '@/lib/auth-client';
 import {
   Eye, EyeOff, Zap, Mail, Lock, User as UserIcon,
   AlertCircle, GraduationCap, Briefcase, CheckCircle, UploadCloud, ImagePlus, X, Loader2
@@ -17,9 +16,6 @@ const ROLES: { value: Role; label: string; desc: string; Icon: React.ElementType
 ];
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const { register } = useAuth();
-
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirmPassword: '', role: 'learner' as Role, avatar: '',
   });
@@ -84,8 +80,15 @@ export default function RegisterPage() {
     setLoading(true);
     setErrors({});
     try {
-      await register(form.name.trim(), form.email, form.password, form.role, form.avatar);
-      // Full page reload so better-auth session cookie is picked up by Navbar
+      const { error } = await signUp.email({
+        email: form.email,
+        password: form.password,
+        name: form.name.trim(),
+        image: form.avatar || '',
+        role: form.role,
+        avatar: form.avatar || '',
+      } as any);
+      if (error) throw new Error(error.message || 'Registration failed');
       window.location.href = '/';
     } catch (err: any) {
       setErrors({ general: err?.message || err?.response?.data?.message || 'Registration failed.' });

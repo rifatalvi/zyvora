@@ -2,19 +2,16 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // kept for potential future use
-
-import { useAuth } from '@/context/AuthContext';
+import { authClient, signIn } from '@/lib/auth-client';
 import { Eye, EyeOff, Zap, Mail, Lock, AlertCircle, Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
-  const { login } = useAuth();
 
 
-  const [form,    setForm]    = useState({ email: '', password: '' });
-  const [errors,  setErrors]  = useState<{ email?: string; password?: string; general?: string }>({});
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
   const [loading, setLoading] = useState(false);
-  const [showPw,  setShowPw]  = useState(false);
+  const [showPw, setShowPw] = useState(false);
 
   const validate = () => {
     const e: typeof errors = {};
@@ -31,8 +28,11 @@ export default function LoginPage() {
     setLoading(true);
     setErrors({});
     try {
-      await login(form.email, form.password);
-      // Full page reload so better-auth session cookie is picked up by Navbar
+      const { error } = await authClient.signIn.email({
+        email: form.email,
+        password: form.password,
+      });
+      if (error) throw new Error(error.message || 'Login failed');
       window.location.href = '/';
     } catch (err: any) {
       setErrors({ general: err?.message || err?.response?.data?.message || 'Login failed. Please try again.' });
@@ -105,9 +105,8 @@ export default function LoginPage() {
                   value={form.email}
                   onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                   placeholder="you@example.com"
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl bg-surface-2/80 border text-text text-sm placeholder:text-muted outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 ${
-                    errors.email ? 'border-red-500/50' : 'border-primary-900/30'
-                  }`}
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl bg-surface-2/80 border text-text text-sm placeholder:text-muted outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 ${errors.email ? 'border-red-500/50' : 'border-primary-900/30'
+                    }`}
                 />
               </div>
               {errors.email && <p className="mt-1.5 text-xs text-red-400">{errors.email}</p>}
@@ -127,9 +126,8 @@ export default function LoginPage() {
                   value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   placeholder="••••••••"
-                  className={`w-full pl-10 pr-10 py-3 rounded-xl bg-surface-2/80 border text-text text-sm placeholder:text-muted outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 ${
-                    errors.password ? 'border-red-500/50' : 'border-primary-900/30'
-                  }`}
+                  className={`w-full pl-10 pr-10 py-3 rounded-xl bg-surface-2/80 border text-text text-sm placeholder:text-muted outline-none transition-all duration-200 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 ${errors.password ? 'border-red-500/50' : 'border-primary-900/30'
+                    }`}
                 />
                 <button
                   type="button"

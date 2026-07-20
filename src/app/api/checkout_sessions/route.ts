@@ -27,7 +27,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Item not found' }, { status: 404 })
         }
 
-        const appUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'
+        const appUrl = process.env.NEXT_PUBLIC_BASE_URL
 
         const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [
             {

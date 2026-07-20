@@ -53,7 +53,7 @@ export default function Navbar() {
 
   useEffect(() => { setMobileOpen(false); setDropdownOpen(false); }, [pathname]);
 
-  const handleLogout = () => { logout(); router.push('/'); };
+  const handleLogout = async () => { await logout(); router.push('/'); };
   const routes = isAuthenticated 
     ? authRoutes.filter(r => user?.role === 'provider' || (r.href !== '/add-item' && r.href !== '/manage-items')) 
     : publicRoutes;
