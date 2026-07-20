@@ -32,7 +32,7 @@ export default function TransactionsPage() {
   const { data, isLoading, isError } = useQuery<MyBookingsResponse>({
     queryKey: ['my-bookings'],
     queryFn: async () => {
-      const res = await api.get('/bookings/my-bookings');
+      const res = await api.get(`${process.env.NEXT_PUBLIC_API_URL}/bookings/my-bookings`);
       return res.data;
     },
     enabled: isAuthenticated,
@@ -162,9 +162,8 @@ export default function TransactionsPage() {
             {bookings.map((booking, i) => (
               <div
                 key={booking._id}
-                className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-surface-2/50 transition-colors ${
-                  i < bookings.length - 1 ? 'border-b border-primary-900/10' : ''
-                }`}
+                className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-surface-2/50 transition-colors ${i < bookings.length - 1 ? 'border-b border-primary-900/10' : ''
+                  }`}
               >
                 {/* Course */}
                 <div className="col-span-4 flex items-center gap-3">
@@ -192,13 +191,12 @@ export default function TransactionsPage() {
 
                 {/* Status */}
                 <div className="col-span-2">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
-                    booking.status === 'completed'
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${booking.status === 'completed'
                       ? 'bg-green-500/10 text-green-400 border border-green-500/20'
                       : booking.status === 'pending'
-                      ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-                      : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                  }`}>
+                        ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                        : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                    }`}>
                     <CheckCircle2 size={12} />
                     {booking.status}
                   </span>
