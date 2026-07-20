@@ -38,7 +38,7 @@ export default function ItemDetailsPage() {
       const res = await fetch('/api/checkout_sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemId: data.item._id, email: user?.email }),
+        body: JSON.stringify({ itemId: data.item._id, email: user?.email, userId: user?._id }),
       });
       const result = await res.json();
       

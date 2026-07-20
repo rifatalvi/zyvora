@@ -56,29 +56,29 @@ export async function POST(req: Request) {
             cancel_url: `${appUrl}/items/${item._id}`,
         })
 
-        // Create pending booking in zyvora-server
+        // Create pending booking in MongoDB directly
+        // We do this directly because cross-domain cookie forwarding from Next.js server to Express backend is unreliable in Vercel
         try {
-            // Forward the cookie from the incoming request so the backend can authenticate the user
-            const cookieHeader = req.headers.get('cookie') || '';
-            await api.post(
-                '/bookings',
-                {
-                    itemId: item._id,
-                    amount: item.price,
-                    stripeSessionId: checkoutSession.id,
-                },
-                {
-                    headers: {
-                        Cookie: cookieHeader,
-                        // Better Auth requires Origin for CSRF protection on state-changing requests (POST)
-                        Origin: process.env.NEXT_PUBLIC_BASE_URL as string,
-                    }
-                }
-            );
-        } catch (bookingError) {
-            console.error('Failed to create pending booking in backend:', bookingError);
-            // We can choose to fail the checkout, but for now we proceed. 
-            // In a real production app, you might want to cancel the stripe session if DB save fails.
+            const { MongoClient, ObjectId } = await import('mongodb')
+            const client = new MongoClient(process.env.MONGODB_URI as string)
+            const db = client.db('zyvora')
+            
+            await db.collection('booking').insertOne({
+                userId: body.userId, // passed from frontend
+                itemId: new ObjectId(item._id),
+                amount: item.price,
+                stripeSessionId: checkoutSession.id,
+                status: 'pending',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            })
+            await client.close()
+        } catch (bookingError: any) {
+            console.error('Failed to create pending booking in DB directly:', bookingError.message);
+            return NextResponse.json(
+                { error: `Failed to initialize booking: ${bookingError.message}` },
+                { status: 500 }
+            )
         }
 
         return NextResponse.json({ url: checkoutSession.url })
