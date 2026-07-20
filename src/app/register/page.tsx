@@ -124,7 +124,7 @@ export default function RegisterPage() {
     try {
       const { data, error } = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/',
+        callbackURL: `${window.location.origin}/`,
       });
       if (error) throw new Error(error.message || 'Google sign in failed');
     } catch (err: any) {

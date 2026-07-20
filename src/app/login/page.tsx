@@ -29,8 +29,8 @@ export default function LoginPage() {
     setErrors({});
     try {
       const { error } = await authClient.signIn.email({
-        email: form.email,
-        password: form.password,
+        email: form.email as any,
+        password: form.password as any,
       });
       if (error) throw new Error(error.message || 'Login failed');
       window.location.href = '/';
@@ -49,7 +49,7 @@ export default function LoginPage() {
     try {
       const { data, error } = await authClient.signIn.social({
         provider: 'google',
-        callbackURL: '/',
+        callbackURL: `${window.location.origin}/`,
       });
       if (error) throw new Error(error.message || 'Google sign in failed');
     } catch (err: any) {
@@ -57,6 +57,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+  // asdasd
 
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 px-4 gradient-hero relative overflow-hidden">
