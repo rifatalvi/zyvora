@@ -70,6 +70,8 @@ export async function POST(req: Request) {
                 {
                     headers: {
                         Cookie: cookieHeader,
+                        // Better Auth requires Origin for CSRF protection on state-changing requests (POST)
+                        Origin: process.env.NEXT_PUBLIC_BASE_URL as string,
                     }
                 }
             );
