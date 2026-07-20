@@ -29,7 +29,7 @@ export default function MyBookingsPage() {
   const { data, isLoading, isError } = useQuery<MyBookingsResponse>({
     queryKey: ['my-bookings'],
     queryFn: async () => {
-      const res = await api.get('/bookings/my-bookings');
+      const res = await api.get(`/bookings/my-bookings`);
       return res.data;
     },
     enabled: isAuthenticated,
