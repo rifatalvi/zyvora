@@ -7,7 +7,7 @@ const db = client.db('zyvora');
 
 export const auth = betterAuth({
     // The public URL of this Next.js app — needed for cookies & CSRF in production
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.NEXT_PUBLIC_BASE_URL as string,
 
     // Must match BETTER_AUTH_SECRET on the backend if sharing the same DB
     secret: process.env.BETTER_AUTH_SECRET,
@@ -19,7 +19,6 @@ export const auth = betterAuth({
         enabled: true,
     },
     trustedOrigins: [
-        'http://localhost:3000',
         process.env.NEXT_PUBLIC_BASE_URL,
     ].filter(Boolean) as string[],
     user: {
