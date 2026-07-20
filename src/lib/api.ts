@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a generic axios instance for our custom backend API calls (e.g. for /api/items)
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL as string,
   headers: {
     'Content-Type': 'application/json',
   },
